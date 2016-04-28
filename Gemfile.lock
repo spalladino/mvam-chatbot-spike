@@ -32,7 +32,7 @@ GEM
     json (1.8.3)
     minitest (5.8.4)
     multipart-post (2.0.0)
-    pg (0.18.4)
+    mysql2 (0.4.4)
     rake (11.1.2)
     telegram-bot-ruby (0.5.0)
       faraday
@@ -52,6 +52,9 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   i18n
-  pg
+  mysql2
   rake
   telegram-bot-ruby
+
+BUNDLED WITH
+   1.11.2

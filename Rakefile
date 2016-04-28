@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 
-require 'pg'
+require 'mysql2'
 require 'active_record'
 require 'yaml'
 
@@ -17,8 +17,7 @@ namespace :db do
   desc 'Create the database'
   task :create do
     connection_details = YAML::load(File.open('config/database.yml'))
-    admin_connection = connection_details.merge({'database'=> 'postgres',
-                                                'schema_search_path'=> 'public'})
+    admin_connection = connection_details.merge({'database'=> 'information_schema'})
     ActiveRecord::Base.establish_connection(admin_connection)
     ActiveRecord::Base.connection.create_database(connection_details.fetch('database'))
   end
@@ -26,8 +25,7 @@ namespace :db do
   desc 'Drop the database'
   task :drop do
     connection_details = YAML::load(File.open('config/database.yml'))
-    admin_connection = connection_details.merge({'database'=> 'postgres',
-                                                'schema_search_path'=> 'public'})
+    admin_connection = connection_details.merge({'database'=> 'information_schema'})
     ActiveRecord::Base.establish_connection(admin_connection)
     ActiveRecord::Base.connection.drop_database(connection_details.fetch('database'))
   end
