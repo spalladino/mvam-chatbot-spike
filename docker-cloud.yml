@@ -1,0 +1,28 @@
+db:
+  image: mysql:5.6.29
+  environment:
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  autorestart: always
+
+web:
+  image: spalladino/mvam-chatbot-spike:latest
+  command: /bin/sh -c "rake db:migrate && bin/web"
+  autorestart: always
+  autoredeploy: true
+  ports:
+    - "80"
+  environment:
+    VIRTUAL_HOST: mvam-chatbot-spike.instedd.org
+    DATABASE_URL: mysql2://root@db/mvam-chatbot-spike
+
+bot:
+  image: spalladino/mvam-chatbot-spike:latest
+  command: /bin/sh -c "sleep 5 && bin/bot"
+  autorestart: always
+  autoredeploy: true
+  environment:
+    DATABASE_URL: mysql2://root@db/mvam-chatbot-spike
+    TELEGRAM_BOT_TOKEN:
+    PANDORA_BOT_NAME:
+    PANDORA_APP_ID:
+    PANDORA_USER_KEY:
