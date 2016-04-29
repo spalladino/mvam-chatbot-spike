@@ -15,6 +15,7 @@ class MessageSender
     @text = options[:text]
     @chat = options[:chat]
     @answers = options[:answers]
+    @reply_markup = options[:reply_markup]
     @user_id = options[:user_id]
     @logger = AppConfigurator.new.get_logger
   end
@@ -33,7 +34,9 @@ class MessageSender
   private
 
   def reply_markup
-    if answers
+    if @reply_markup
+      @reply_markup
+    elsif answers
       ReplyMarkupFormatter.new(answers).get_markup
     end
   end

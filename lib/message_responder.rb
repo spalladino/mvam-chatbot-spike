@@ -53,6 +53,11 @@ class MessageResponder
   end
 
   def answer_with_message(text)
-    MessageSender.new(bot: bot, chat: message.chat, text: text, user_id: user.id).send
+    if text.include?("XKEYBOARD")
+      text, keyboard = text.split('XKEYBOARD').map(&:strip)
+      answers = keyboard.split('XSPLITTER').map(&:strip)
+    end
+
+    MessageSender.new(bot: bot, chat: message.chat, text: text, user_id: user.id, answers: answers).send
   end
 end
