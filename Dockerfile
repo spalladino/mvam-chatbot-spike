@@ -1,5 +1,7 @@
 FROM ruby:2.2.5
 
+WORKDIR /app
+
 ADD Gemfile /app/
 ADD Gemfile.lock /app/
 RUN bundle install --jobs 3 --deployment --without development test
