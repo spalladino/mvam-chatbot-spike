@@ -1,25 +1,25 @@
 require './models/user'
 require './lib/message_sender'
+require './lib/pandora_client'
 
 class MessageResponder
   attr_reader :message
   attr_reader :bot
   attr_reader :user
+  attr_reader :config
 
   def initialize(options)
     @bot = options[:bot]
     @message = options[:message]
+    @config = options[:config]
     @user = User.find_or_create_by(uid: message.from.id)
   end
 
   def respond
-    on /^\/start/ do
-      answer_with_greeting_message
-    end
-
-    on /^\/stop/ do
-      answer_with_farewell_message
-    end
+    response = PandoraClient.new(@config).talk(message.text, user.uid.to_s)
+    answer_with_message(response['responses'].join(". ").to_s) if response
+  rescue => ex
+    @config.get_logger.error("Error processing message #{message.inspect} from #{user.inspect}: #{ex}")
   end
 
   private
