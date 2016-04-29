@@ -2,8 +2,8 @@
 require 'rubygems'
 require 'telegram/bot'
 
-require './lib/message_responder'
 require './lib/app_configurator'
+require './lib/message_responder'
 
 config = AppConfigurator.new
 config.configure

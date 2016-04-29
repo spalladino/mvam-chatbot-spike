@@ -1,5 +1,6 @@
 require './lib/reply_markup_formatter'
 require './lib/app_configurator'
+require './models/message_log'
 
 class MessageSender
   attr_reader :bot
@@ -7,12 +8,14 @@ class MessageSender
   attr_reader :chat
   attr_reader :answers
   attr_reader :logger
+  attr_reader :user_id
 
   def initialize(options)
     @bot = options[:bot]
     @text = options[:text]
     @chat = options[:chat]
     @answers = options[:answers]
+    @user_id = options[:user_id]
     @logger = AppConfigurator.new.get_logger
   end
 
@@ -24,6 +27,7 @@ class MessageSender
     end
 
     logger.debug "sending '#{text}' to #{chat.username}"
+    MessageLog.create_ao(user_id: user_id, text: text)
   end
 
   private

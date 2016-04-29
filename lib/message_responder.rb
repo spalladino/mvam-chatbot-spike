@@ -1,4 +1,5 @@
 require './models/user'
+require './models/message_log'
 require './lib/message_sender'
 require './lib/pandora_client'
 
@@ -20,7 +21,9 @@ class MessageResponder
   end
 
   def respond
-    initialize_user if user.created_record
+    pandora_talk("XSET name #{user.name}") if user.created_record
+    MessageLog.create_at(user_id: user.id, text: message.text)
+
     response = pandora_talk(message.text)
     @config.get_logger.debug("Pandorabot: #{response.inspect}")
     answer_with_message(response['responses'].join(". ").to_s) if response
@@ -45,15 +48,11 @@ class MessageResponder
     end
   end
 
-  def initialize_user
-    pandora_talk("XSET name #{user.name}")
-  end
-
   def pandora_talk(text)
     PandoraClient.new(@config).talk(text, session_id: user.uid, client_name: user.uid)
   end
 
   def answer_with_message(text)
-    MessageSender.new(bot: bot, chat: message.chat, text: text).send
+    MessageSender.new(bot: bot, chat: message.chat, text: text, user_id: user.id).send
   end
 end
