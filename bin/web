@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sinatra'
+require './app/main'
