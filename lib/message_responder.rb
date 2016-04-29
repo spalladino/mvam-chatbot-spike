@@ -12,11 +12,17 @@ class MessageResponder
     @bot = options[:bot]
     @message = options[:message]
     @config = options[:config]
-    @user = User.find_or_create_by(uid: message.from.id)
+    @user = User.find_or_create_by(uid: message.from.id) do |u|
+      u.created_record = true
+      u.name = [message.from.first_name, message.from.last_name].compact.join(' ')
+      u.username = message.from.username
+    end
   end
 
   def respond
-    response = PandoraClient.new(@config).talk(message.text, user.uid.to_s)
+    initialize_user if user.created_record
+    response = pandora_talk(message.text)
+    @config.get_logger.debug("Pandorabot: #{response.inspect}")
     answer_with_message(response['responses'].join(". ").to_s) if response
   rescue => ex
     @config.get_logger.error("Error processing message #{message.inspect} from #{user.inspect}: #{ex}")
@@ -39,12 +45,12 @@ class MessageResponder
     end
   end
 
-  def answer_with_greeting_message
-    answer_with_message I18n.t('greeting_message')
+  def initialize_user
+    pandora_talk("XSET name #{user.name}")
   end
 
-  def answer_with_farewell_message
-    answer_with_message I18n.t('farewell_message')
+  def pandora_talk(text)
+    PandoraClient.new(@config).talk(text, session_id: user.uid, client_name: user.uid)
   end
 
   def answer_with_message(text)
