@@ -17,7 +17,9 @@ cp config/database.yml.sample config/database.yml
 cp config/secrets.yml.sample config/secrets.yml
 ```
 
-Then you need to fill your [Telegram bot unique token](https://core.telegram.org/bots#botfather) to the `secrets.yml` file and your database credentials to `database.yml`.
+Then you need to fill your [Telegram bot unique token](https://core.telegram.org/bots#botfather) and your [Pandorabots credentials](https://developer.pandorabots.com/) to the `secrets.yml` file and your database credentials to `database.yml`.
+
+Alternatively, you can set the equivalent environment variables for secrets (in all caps) and `DATABASE_URL` for connecting to the DB.
 
 After this you need to create and migrate your database:
 
