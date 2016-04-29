@@ -1,4 +1,11 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+require './lib/app_configurator'
+
+AppConfigurator.new.configure
+
+require './models/message_log'
+require './models/user'
+
 require 'sinatra'
 require './app/main'

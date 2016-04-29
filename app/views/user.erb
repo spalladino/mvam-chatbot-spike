@@ -1,0 +1,15 @@
+<h1><%= @user.username %></h1>
+<h3><%= @user.name %></h3>
+
+<br/>
+<br/>
+
+<ul class="list-group">
+<% @messages.each do |message| %>
+  <li class="list-group-item">
+    <span class="glyphicon glyphicon-arrow-<%= message.at? ? 'right' : 'left' %>" aria-hidden="true"></span>
+    <span><%= message.text %></span>
+    <span class="pull-right text-muted"><%= message.created_at %></span>
+  </li>
+<% end %>
+</ul>
