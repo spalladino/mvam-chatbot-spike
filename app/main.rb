@@ -1,6 +1,6 @@
 use ActiveRecord::ConnectionAdapters::ConnectionManagement
 
-set :bind, ENV['bind'] || 'localhost'
+set :bind, ENV['BIND'] || '0.0.0.0'
 set :port, ENV['PORT'] || '4567'
 set :views, File.expand_path('../views', __FILE__)
 set :public_folder, File.expand_path('../public', __FILE__)
