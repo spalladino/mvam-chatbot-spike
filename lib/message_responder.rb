@@ -21,7 +21,7 @@ class MessageResponder
   end
 
   def respond
-    pandora_talk("XSET name #{user.name}") if user.created_record
+    pandora_talk("XSET name #{user.name}") if user.created_record || user.message_logs.order(:id).last.created_at < 1.hour.ago
     MessageLog.create_at(user_id: user.id, text: message.text)
 
     response = pandora_talk(message.text)
