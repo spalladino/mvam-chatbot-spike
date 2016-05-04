@@ -24,11 +24,13 @@ class MessageResponder
     pandora_talk("XSET name #{user.name}") if user.created_record || user.message_logs.order(:id).last.created_at < 1.hour.ago
     MessageLog.create_at(user_id: user.id, text: message.text)
 
-    response = pandora_talk(message.text)
-    @config.get_logger.debug("Pandorabot: #{response.inspect}")
+    response = pandora_talk(message.text, user.pandora_that)
+    user.update_column(:pandora_that, nil)
+    config.get_logger.debug("Pandorabot: #{response.inspect}")
+
     answer_with_message(response['responses'].join(". ").to_s) if response
   rescue => ex
-    @config.get_logger.error("Error processing message #{message.inspect} from #{user.inspect}: #{ex}")
+    config.get_logger.error("Error processing message #{message.inspect} from #{user.inspect}: #{ex}")
   end
 
   private
@@ -48,11 +50,16 @@ class MessageResponder
     end
   end
 
-  def pandora_talk(text)
-    PandoraClient.new(@config).talk(text, session_id: user.uid, client_name: user.uid)
+  def pandora_talk(text, that=nil)
+    PandoraClient.new(@config).talk(text, session_id: user.uid, client_name: user.uid, that: that)
   end
 
   def answer_with_message(text)
+    if text.include?("XTHAT")
+      text, that = text.split('XTHAT').map(&:strip)
+      user.update_column(:pandora_that, that)
+    end
+
     if text.include?("XKEYBOARD")
       text, keyboard = text.split('XKEYBOARD').map(&:strip)
       answers = keyboard.split('XSPLITTER').map(&:strip)
